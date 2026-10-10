@@ -1,6 +1,5 @@
 package com.talentotech;
 
-import javax.management.monitor.MonitorSettingException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -20,7 +19,7 @@ public class Main {
             try {
                 switch (opcion){
                     case 1 -> agregarProducto(sc);
-                    case 2 -> listarProductos(sc);
+                    case 2 -> listarProductos();
                     case 3 -> buscarProducto(sc);
                     case 4 -> actualizarProducto(sc);
                     case 5 -> eliminarProducto(sc);
@@ -67,9 +66,9 @@ public class Main {
         // Guardamos el producto al servicio
         Producto guardado = service.guardar(p);
 
-        mostrar("# Nuevo producto agregado: ID" + guardado.getId());
+        mostrar("# Nuevo producto agregado: ID " + guardado.getId());
     }
-    private static void listarProductos(Scanner sc){
+    private static void listarProductos(){
         List<Producto> list = service.listarTodos();
         if(list.isEmpty()){
             mostrar("La lista esta vacia.");
@@ -82,13 +81,33 @@ public class Main {
         }
     }
     private static void buscarProducto(Scanner sc){
+        mostrar("# Busqueda de producto");
+        int id = Validador.leerEntero(sc, "Ingrese la ID del producto: ");
 
+        Producto encontrado = service.obtenerPorId(id);
+        if(encontrado != null){
+            encontrado.print();
+        }
     }
     private static void actualizarProducto(Scanner sc){
+        mostrar("# Actualizar producto");
+        int id = Validador.leerEntero(sc, "Ingrese la ID del producto a actualizar: ");
 
+        String nombre = Validador.leerTexto(sc, "Nombre: ");
+        double precio = Validador.leerDouble(sc, "Precio: ");
+        int stock = Validador.leerEntero(sc, "Stock: ");
+        String categoria = Validador.leerTexto(sc, "Categoría: ");
+
+        Producto p = service.actualizar(id, new Producto(nombre, precio, stock, categoria));
+
+        mostrar("# Producto actualizado con éxito | " + p);
     }
     private static void eliminarProducto(Scanner sc){
+        mostrar("# Eliminar producto");
+        int id = Validador.leerEntero(sc, "Ingrese la ID del producto a eliminar: ");
 
+        service.eliminar(id);
+        mostrar("# Producto eliminado");
     }
 
 
